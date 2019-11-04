@@ -6737,6 +6737,11 @@ readdirp@~3.2.0:
   dependencies:
     picomatch "^2.0.4"
 
+recorderjs@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npm.taobao.org/recorderjs/download/recorderjs-1.0.1.tgz#f8211a0f90bdcdcfa2f431a597b6cb94a1b93571"
+  integrity sha1-+CEaD5C9zc+i9DGll7bLlKG5NXE=
+
 regenerate-unicode-properties@^8.1.0:
   version "8.1.0"
   resolved "https://registry.npm.taobao.org/regenerate-unicode-properties/download/regenerate-unicode-properties-8.1.0.tgz#ef51e0f0ea4ad424b77bf7cb41f3e015c70a3f0e"
