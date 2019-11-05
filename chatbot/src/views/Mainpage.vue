@@ -20,17 +20,18 @@
   </div>
 </template>
 <script>
+// import recorderjs from "recorderjs";
 //webkitURL is deprecated but nevertheless
 // URL = window.URL || window.webkitURL;
-var gumStream;
+// var gumStream;
 //stream from getUserMedia()
-var rec;
+// var rec;
 //Recorder.js object
-var input;
+// var input;
 //MediaStreamAudioSourceNode we'll be recording
 // shim for AudioContext when it's not avb.
-var AudioContext = window.AudioContext || window.webkitAudioContext;
-var audioContext = new AudioContext();
+// var AudioContext = window.AudioContext || window.webkitAudioContext;
+
 //new audio context to help us record
 export default {
   data() {
@@ -62,15 +63,14 @@ export default {
           //   "getUserMedia() success, stream created, initializing Recorder.js ..."
           // );
           /* assign to gumStream for later use */
-          gumStream = stream;
+          // var gumStream = stream;
           /* use the stream */
-          input = audioContext.createMediaStreamSource(stream);
+          var audioContext = new AudioContext();
+          var input = audioContext.createMediaStreamSource(stream);
+          // input.connect(audioContext.destination);
+          var processer = audioContext.createScriptProcessor(4096, 1, 1);
           /* Create the Recorder object and configure to record mono sound (1 channel) Recording 2 channels will double the file size */
-          rec = new this.$recorderjs(input, {
-            numChannels: 1
-          });
-          //start the recording process
-          rec.record();
+          // console.log(input);
           // console.log("Recording started");
         })
         .catch(function(err) {
@@ -81,18 +81,18 @@ export default {
           throw err;
         });
     },
-    createDownloadLink(blob) {
-      // var url = URL.createObjectURL(blob);
-      this.$socket.emit("blob data", blob);
-      var filename = new Date().toISOString();
-      this.value = filename;
-    },
+    // createDownloadLink(blob) {
+    //   // var url = URL.createObjectURL(blob);
+    //   this.$socket.emit("blob data", blob);
+    //   var filename = new Date().toISOString();
+    //   this.value = filename;
+    // },
     stopRecording() {
-      rec.stop(); //stop microphone access
-      gumStream.getAudioTracks()[0].stop();
-      // rec.exportWAV(createDownloadLink)
-      //create the wav blob and pass it on to createDownloadLink
-      rec.exportWAV(this.createDownloadLink);
+      // rec.stop(); //stop microphone access
+      // gumStream.getAudioTracks()[0].stop();
+      // // rec.exportWAV(createDownloadLink)
+      // //create the wav blob and pass it on to createDownloadLink
+      // rec.exportWAV(this.createDownloadLink);
     }
   },
   created() {
@@ -146,3 +146,4 @@ export default {
 //         console.log('server recived msg:' + msg);
 //     })
 // })
+// http://dy.163.com/v2/article/detail/DQS54OVJ0518T2NO.html
