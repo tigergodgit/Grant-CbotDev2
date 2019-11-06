@@ -20,19 +20,13 @@
   </div>
 </template>
 <script>
-// import recorderjs from "recorderjs";
-//webkitURL is deprecated but nevertheless
-// URL = window.URL || window.webkitURL;
-// var gumStream;
-//stream from getUserMedia()
-// var rec;
-//Recorder.js object
-// var input;
-//MediaStreamAudioSourceNode we'll be recording
-// shim for AudioContext when it's not avb.
-// var AudioContext = window.AudioContext || window.webkitAudioContext;
-
-//new audio context to help us record
+import Recorderx, { ENCODE_TYPE } from "recorderx";
+const rc = new Recorderx({
+  recordable: true,
+  sampleRate: 16000,
+  sampleBits: 16,
+  bufferSize: 16384
+});
 export default {
   data() {
     return {
@@ -51,48 +45,24 @@ export default {
       this.value = null;
     },
     startRecording() {
-      // console.log("录音开始");
-      var constraints = {
-        audio: true,
-        video: false
-      };
-      navigator.mediaDevices
-        .getUserMedia(constraints)
-        .then(stream => {
-          // console.log(
-          //   "getUserMedia() success, stream created, initializing Recorder.js ..."
-          // );
-          /* assign to gumStream for later use */
-          // var gumStream = stream;
-          /* use the stream */
-          var audioContext = new AudioContext();
-          var input = audioContext.createMediaStreamSource(stream);
-          // input.connect(audioContext.destination);
-          var processer = audioContext.createScriptProcessor(4096, 1, 1);
-          /* Create the Recorder object and configure to record mono sound (1 channel) Recording 2 channels will double the file size */
-          // console.log(input);
-          // console.log("Recording started");
+      rc.start()
+        .then(() => {
+          console.log("开始录音");
         })
-        .catch(function(err) {
-          //enable the record button if getUserMedia() fails
-          // recordButton.disabled = false;
-          // stopButton.disabled = true;
-          // pauseButton.disabled = true;
-          throw err;
+        .catch(error => {
+          console.log("录音出错.", error);
         });
     },
-    // createDownloadLink(blob) {
-    //   // var url = URL.createObjectURL(blob);
-    //   this.$socket.emit("blob data", blob);
-    //   var filename = new Date().toISOString();
-    //   this.value = filename;
-    // },
+
     stopRecording() {
-      // rec.stop(); //stop microphone access
-      // gumStream.getAudioTracks()[0].stop();
-      // // rec.exportWAV(createDownloadLink)
-      // //create the wav blob and pass it on to createDownloadLink
-      // rec.exportWAV(this.createDownloadLink);
+      rc.pause();
+      var pcm = rc.getRecord({
+        encodeTo: ENCODE_TYPE.PCM,
+        compressible: true
+      });
+      // console.log(wav);
+      this.$socket.emit("wav", pcm);
+      rc.clear();
     }
   },
   created() {
